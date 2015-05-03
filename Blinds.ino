@@ -33,7 +33,7 @@ struct debugLevel {
     const boolean EEPROMRead = false;
     const boolean EEPROMWrite = false;
     const boolean LCD = false;
-    const boolean Photo = true;
+    const boolean Photo = false;
     const boolean Relays = false;
     const boolean RxMsg = true;
     const boolean Thermister = false;
@@ -146,11 +146,11 @@ Shade shadeAll {0xAA80FC80, 0xAA80FCFF, 0xAA80FC88, 0xAA80FCF0, 0xAA80FC8F};  //
 const int rxPin = 2;
 //const int rxLED = 13;
 
-const int relayPwrPin[4] = {5, 111, 112, 113};
-const int relayDirPin[4] = {6, 114, 115, 166};
+const int relayPwrPin[4] = {4, 6, 8, 10};
+const int relayDirPin[4] = {5, 7, 9, 11};
 boolean relaysActive = false;
 
-const int lightLevelPin = 7;
+const int lightLevelPin = 3;
 
 const int tempPin = A0;
 
@@ -205,7 +205,7 @@ void setup() {
     delay(2000);*/
     lcd.clear();
 
-    digitalWrite(12, HIGH);
+    //digitalWrite(12, HIGH);
 
     //pinMode(rxPin, INPUT); // Input of 433 MHz receiver
 
