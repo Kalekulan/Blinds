@@ -7,7 +7,7 @@
     uint16_t received;
 
     if (mySwitch.available()) {
-        LED(12, light); //GREEN
+        //LED(12, light); //GREEN
 
         //int value = mySwitch.getReceivedValue();
         received = mySwitch.getReceivedValue();
@@ -44,11 +44,11 @@
 
             received = shadeAll_neutral;
             timerReset = true;
-            LED(13, light); //BLUE
+            //LED(13, light); //BLUE
         }
         else {
             received = 0;
-            LED(13, light); //BLUE
+            //LED(13, light); //BLUE
         }
     }
 

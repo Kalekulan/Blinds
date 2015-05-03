@@ -1,6 +1,6 @@
 #include <VirtualWire.h>
 #include <Wire.h> 
-#include <LCD.h>
+//#include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
 #include <EEPROM.h>
@@ -45,7 +45,7 @@ debugLevel LEVEL;
 
 const boolean DEBUG = true;
 
-
+/*
 
 struct ledColors {
 
@@ -65,8 +65,7 @@ const int RGB[4] = {NONE, RED, GREEN, BLUE};
 
 ledColors LEDPin;
 
-
-
+*/
 
 /*
 const uint32_t neutral_Shade[5] = {0xAA80C080, 0xAA80E080, 0xAA80F080, 0xAA80F880, 0xAA80FC80};
