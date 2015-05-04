@@ -1,11 +1,16 @@
-void Branch(uint16_t msgBranch, String tempString) {
+void Branch(uint16_t msgBranch, double temp) {
 
     //String tempString;
 
-    boolean ON = LOW;
+    boolean ON = LOW; //LED LIT
     boolean OFF = HIGH;
-    boolean UP = LOW;
+    boolean UP = LOW; //LED LIT
     boolean DOWN = HIGH;
+
+    const int AVG = 7;
+    static double tempArray[AVG];
+    static double tempAvg;
+    static int tempCounter = 0;
 
 
 
@@ -144,7 +149,7 @@ void Branch(uint16_t msgBranch, String tempString) {
 
             Serial.println("Branch::shade2_up");
             LCD("Shade2:", "Up", 0, 0);
-            Relays(1, ON, UP, 0); //PWR ON, UP (?), 3 sec
+            Relays(2, ON, UP, 0); //PWR ON, UP (?), 3 sec
             //tempVisible = false;
             //tempDelay = 100;
 
@@ -298,7 +303,34 @@ void Branch(uint16_t msgBranch, String tempString) {
             if(relaysActive == false) {   
                 //tempString = Thermister(); 
                 //LCD("  Temperature", tempString); //if temp isn't visible, make it visible
-                LCD("Temperature", tempString, 3, 5); //if temp isn't visible, make it visible
+                tempCounter++;
+                tempArray[tempCounter] = temp;
+                if(tempCounter == 4) {
+                    for(int i = 0; i <= 4; i++) {
+                        tempAvg = tempAvg + tempArray[i];
+                        tempArray[i] = 0;
+                    }
+
+                    tempAvg = tempAvg/AVG;
+                    char tempChar[5];
+                    dtostrf(temp, 2, 1, tempChar);  //3 is mininum width, 2 is precision; float value is copied onto buff
+                    String tempString = "";
+                    //display character array
+                    //Serial.print("charVal: ");
+                    //for(int i=0;i<sizeof(charVal);i++)
+                    //{
+                    //Serial.print(charVal[i]);
+                    //}
+                    //Serial.println();
+                    //convert chararray to string
+                    for(int i = 0; i < sizeof(tempChar) - 1; i++) tempString+=tempChar[i];  //-1 to remove trash
+
+                    tempString = tempString + "C";
+
+                    LCD("Temperature", tempString, 3, 5); //if temp isn't visible, make it visible
+                    tempCounter = 0;
+                    
+                }
                 //LCD("Temperature", ""+tempa, 3, 5); //if temp isn't visible, make it visible
                 //tempDelay = 100; //reset if <=0
                 //tempVisible = true; //temp is now visible

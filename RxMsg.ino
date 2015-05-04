@@ -53,8 +53,8 @@
     }
 
     if(DEBUG && LEVEL.RxMsg) {
-        Serial.print("received = ");
-        Serial.println(received);
+        //Serial.print("received = ");
+        //Serial.println(received);
     }
     return(received);
 

@@ -34,7 +34,7 @@ struct debugLevel {
     const boolean EEPROMWrite = false;
     const boolean LCD = false;
     const boolean Photo = false;
-    const boolean Relays = false;
+    const boolean Relays = true;
     const boolean RxMsg = true;
     const boolean Thermister = false;
     const boolean Time = false;
@@ -230,9 +230,10 @@ void setup() {
 void loop() {    
 
 
-
+    
     uint16_t msg;
-    String tempString;
+    //String tempString;
+    double temp;
     int light;
 
 
@@ -242,7 +243,7 @@ void loop() {
     //delay(100);
 
     light = Photo(); //Check lighting in environment
-    tempString = Thermister(); 
+    temp = Thermister(); 
 
 
     msg = RxMsg(light); //needed!!!!!!!!!
@@ -261,7 +262,7 @@ void loop() {
 
 
 
-    Branch(msg, tempString);
+    Branch(msg, temp);
 
     //Time();
 

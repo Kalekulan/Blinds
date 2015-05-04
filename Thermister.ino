@@ -1,4 +1,4 @@
-String Thermister() {
+double Thermister() {
     
     static int tempCounter = 0;
 //double Thermister() {
@@ -28,9 +28,9 @@ String Thermister() {
     temp = temp*2;
     temp = round(temp);
     temp = temp/2;
-    static double averageTemp = temp;
+    //static double averageTemp = temp;
 
-    dtostrf(temp, 2, 1, tempChar);  //3 is mininum width, 2 is precision; float value is copied onto buff
+    //dtostrf(temp, 2, 1, tempChar);  //3 is mininum width, 2 is precision; float value is copied onto buff
     //display character array
     //Serial.print("charVal: ");
     //for(int i=0;i<sizeof(charVal);i++)
@@ -39,17 +39,17 @@ String Thermister() {
     //}
     //Serial.println();
     //convert chararray to string
-    for(int i=0; i<sizeof(tempChar)-1; i++) tempString+=tempChar[i];  //-1 to remove trash
+    //for(int i=0; i<sizeof(tempChar)-1; i++) tempString+=tempChar[i];  //-1 to remove trash
 
-    tempString = tempString + "C";
+    //tempString = tempString + "C";
 
     
     if(DEBUG && LEVEL.Thermister) {
         Serial.print("Thermister::temp=");
         Serial.print(temp);
         Serial.println("C");
-        Serial.print("Thermister::tempString: ");
-        Serial.println(tempString); //display string
+        //Serial.print("Thermister::tempString: ");
+        //Serial.println(tempString); //display string
     }
 
 
@@ -76,5 +76,6 @@ String Thermister() {
 
 
 
-    return tempString;
+    //return tempString;
+    return temp;
 }

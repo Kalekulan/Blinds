@@ -28,8 +28,12 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
 
     
 
-
-    if(shade == 0) {
+    if(shade <= 3) {
+        digitalWrite(relayPwrPin[shade], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
+        //delay(100); //Needed 
+        digitalWrite(relayDirPin[shade], relayDir); //Set Direction (0 = UP, 1 = DOWN) 
+    }
+    /*if(shade == 0) {
         digitalWrite(relayPwrPin[0], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
         //delay(100); //Needed 
         digitalWrite(relayDirPin[0], relayDir); //Set Direction (0 = UP, 1 = DOWN)       
@@ -53,7 +57,7 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
         digitalWrite(relayPwrPin[3], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
         //delay(100); //Needed 
         digitalWrite(relayDirPin[3], relayDir); //Set Direction (0, LOW = UP, 1 = DOWN)
-    }
+    }*/
 
     else if(shade == all) {
 
