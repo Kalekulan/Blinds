@@ -28,7 +28,7 @@ RCSwitch mySwitch = RCSwitch();
 struct debugLevel {
 
     const boolean Blinds = false;
-    const boolean Branch = false;
+    const boolean Branch = true;
     const boolean Decrypt = false;
     const boolean EEPROMRead = false;
     const boolean EEPROMWrite = false;

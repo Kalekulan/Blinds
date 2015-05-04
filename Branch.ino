@@ -226,7 +226,7 @@ void Branch(uint16_t msgBranch, double temp) {
             //LCD("Action", "ShadeAll Neutral");   
             //LCD("", "");    
             Relays(10, OFF, DOWN, 0);
-            rxTimeout = 30;
+            rxTimeout = 20;
             //tempVisible = false;
             //tempDelay = 0;
 
