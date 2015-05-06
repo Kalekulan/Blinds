@@ -28,6 +28,7 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
 
     
 
+
     if(shade <= 3) {
         digitalWrite(relayPwrPin[shade], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
         //delay(100); //Needed 

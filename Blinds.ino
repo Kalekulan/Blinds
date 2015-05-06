@@ -35,7 +35,7 @@ struct debugLevel {
     const boolean LCD = false;
     const boolean Photo = false;
     const boolean Relays = true;
-    const boolean RxMsg = true;
+    const boolean RxMsg = false;
     const boolean Thermister = false;
     const boolean Time = false;
  
@@ -210,7 +210,7 @@ void setup() {
     //pinMode(rxPin, INPUT); // Input of 433 MHz receiver
 
 
-    for(int i = 0; i< 3; i++) {   
+    for(int i = 0; i <= 3; i++) {   
         pinMode(relayPwrPin[i], OUTPUT);
         pinMode(relayDirPin[i], OUTPUT);
         digitalWrite(relayPwrPin[i], HIGH); //set power OFF
@@ -236,8 +236,6 @@ void loop() {
     double temp;
     int light;
 
-
-    
     //vw_rx_start();
 
     //delay(100);
@@ -245,9 +243,8 @@ void loop() {
     light = Photo(); //Check lighting in environment
     temp = Thermister(); 
 
-
+    //msg = 0x9573;
     msg = RxMsg(light); //needed!!!!!!!!!
-
     //Serial.println(msgx);  good to have
 
     //delay(100);

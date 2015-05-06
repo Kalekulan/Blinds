@@ -17,6 +17,7 @@
           Serial.print("RxMsg::Unknown encoding");
           //received = 0;
         } else {
+            //timerReset = true;
             if(DEBUG && LEVEL.RxMsg) {  
               Serial.print("RxMsg::received ");
               Serial.print( mySwitch.getReceivedValue(), HEX);
