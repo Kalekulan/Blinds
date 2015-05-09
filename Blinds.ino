@@ -1,30 +1,17 @@
-#include <VirtualWire.h>
+//*********** LIBRARIES ***********
+#include <VirtualWire.h> //Used for receiving RF
 #include <Wire.h> 
 //#include <LCD.h>
-#include <LiquidCrystal_I2C.h>
-#include <math.h>
-#include <EEPROM.h>
-#include <Time.h>
-
-#include <stdlib.h>
-
-
-#include <RCSwitch.h>
-RCSwitch mySwitch = RCSwitch();
+#include <LiquidCrystal_I2C.h> //Used for LCD
+#include <math.h> //Used for calculating temperature - Thermister()
+#include <EEPROM.h> //Used for R/W to EEPROM
+#include <Time.h> //Used for keeping time
+#include <stdlib.h> //Standard
+#include <RCSwitch.h> //
+//*********************************
 
 
-
-
-/*
-    struct Shade {
-    uint32_t const neutral;
-    uint32_t const up;
-    uint32_t const down;
-    uint32_t const upHalf;
-    uint32_t const downHalf;  
- };
-*/
-
+//*********** DEBUGGING ***********
 struct debugLevel {
 
     const boolean Blinds = false;
@@ -40,13 +27,21 @@ struct debugLevel {
     const boolean Time = false;
  
 };
- 
 debugLevel LEVEL;
-
 const boolean DEBUG = true;
+//*********************************
 
 /*
+    struct Shade {
+    uint32_t const neutral;
+    uint32_t const up;
+    uint32_t const down;
+    uint32_t const upHalf;
+    uint32_t const downHalf;  
+ };
+*/
 
+/*
 struct ledColors {
 
     const int red = 8;
@@ -61,7 +56,6 @@ struct ledColors {
 #define BLUE 155
 #define NONE 0 
 const int RGB[4] = {NONE, RED, GREEN, BLUE};
-
 
 ledColors LEDPin;
 
@@ -103,11 +97,14 @@ const uint32_t shade2_neutral = 0xAA80F080, shade2_up = 0xAA80F0FF, shade2_down 
 const uint32_t shade3_neutral = 0xAA80F880, shade3_up = 0xAA80F8FF, shade3_down = 0xAA80F888; //, shade3_upHalf = 0xAA80F8F0, shade3_downHalf = 0xAA80F88F; //Set database shade 3
 const uint32_t shadeAll_neutral = 0xAA80FC80, shadeAll_up = 0xAA80FCFF, shadeAll_down = 0xAA80FC88; //, shadeAll_upHalf = 0xAA80FCF0, shadeAll_downHalf = 0xAA80FC8F; //Set database all shade*/
 
+//********** RF MESSAGES **********
 const uint16_t /*shade0_neutral = 0x9501,*/ shade0_up = 0x9503, shade0_down = 0x9507; //, shade0_upHalf = 0xAA80C0F0, shade0_downHalf = 0xAA80C08F; //Set database shade 0
 const uint16_t /*shade1_neutral = 0x9511,*/ shade1_up = 0x9513, shade1_down = 0x9517; //, shade1_upHalf = 0xAA80E0F0, shade1_downHalf = 0xAA80E08F; //Set database shade 1
 const uint16_t /*shade2_neutral = 0x9531,*/ shade2_up = 0x9533, shade2_down = 0x9537; //, shade2_upHalf = 0xAA80F0F0, shade2_downHalf = 0xAA80F08F; //Set database shade 2
 const uint16_t /*shade3_neutral = 0x9571,*/ shade3_up = 0x9573, shade3_down = 0x9577; //, shade3_upHalf = 0xAA80F8F0, shade3_downHalf = 0xAA80F88F; //Set database shade 3
 const uint16_t shadeAll_neutral = 0x95F1, shadeAll_up = 0x95F3, shadeAll_down = 0x95F7; //, shadeAll_upHalf = 0xAA80FCF0, shadeAll_downHalf = 0xAA80FC8F; //Set database all shade
+//*********************************
+
 
 /*const uint32_t shade0_neutral = 0xAB80C080, shade0_up = 0xF0F0F0FF, shade0_down = 0xF0F0F0EF; //, shade0_upHalf = 0xAA80C0F0, shade0_downHalf = 0xAA80C08F; //Set database shade 0
 const uint32_t shade1_neutral = 0xAA80C080, shade1_up = 0x21E1E1E7D, shade1_down = 0x21E1E1E5D; //, shade1_upHalf = 0xAA80E0F0, shade1_downHalf = 0xAA80E08F; //Set database shade 1
@@ -127,12 +124,6 @@ const uint32_t shadeAll_neutral = 0xAF80C080, shadeAll_up = 0xAAB, shadeAll_down
 #define DOWN HIGH
 */
 
-int rxTimeout = 20;
-
-//uint16_t received;
-
-boolean timerReset = false;
-
 //uint32_t received[2];
 //uint32_t received;
 /*
@@ -143,24 +134,33 @@ Shade shade3 = {0xAA80F880, 0xAA80F8FF, 0xAA80F888, 0xAA80F8F0, 0xAA80F88F};  //
 Shade shadeAll {0xAA80FC80, 0xAA80FCFF, 0xAA80FC88, 0xAA80FCF0, 0xAA80FC8F};  //Set database all shade
 */
 
-const int rxPin = 2;
-//const int rxLED = 13;
-
-const int relayPwrPin[4] = {4, 6, 8, 10};
-const int relayDirPin[4] = {5, 7, 9, 11};
+//*********** VARIABLES ***********
+int rxTimeout = 20;
+//uint16_t received;
+boolean timerReset = false;
 boolean relaysActive = false;
+//*********************************
 
-const int lightLevelPin = 3;
 
-const int tempPin = A0;
+
+//************ PINNING ************
+//const int rxPin = 2;
+const int relayPwrPin[4] = {4, 6, 8, 10};   // there's four power relays on pin #4, #6, #8, #10
+const int relayDirPin[4] = {5, 7, 9, 11};   // there's four direction relays on pin #5, #7, #9, #11
+const int lightLevelPin = 3;    // pin for the light level module
+const int tempPin = A0;    // the pin for temperature sensor
+//const int rxLED = 13;
+//*********************************
+
 
 //int tempDelay = 0;
 //boolean tempVisible = false; //visible after startup
 //double oldTemp;
 
+//************* INIT **************
+RCSwitch rfRead = RCSwitch();   //Initialize rfRead
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Addr, En, Rw, Rs, d4, d5, d6, d7, backlighpin, polarity
-String oldTopRow;
-String oldBotRow;
+//*********************************
 
 const int lastDay = 255;
 
@@ -169,26 +169,8 @@ const int lastDay = 255;
 //byte lastDirection[4];
 
 void setup() {
-    mySwitch.enableReceive(0);  // Receiver on inerrupt 0 => that is pin #2
 
-    //int i;
-    //delay(500);
-    
-    lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
-    lcd.home();
-        // ------- Quick 3 blinks of backlight  -------------
-    /*for(i = 0; i< 3; i++) {
-        lcd.backlight();
-        delay(250);
-        lcd.noBacklight();
-        delay(250);
-    }*/
-    lcd.backlight(); // finish with backlight on  
-
-    Serial.begin(9600);	// Debugging only
-    while (!Serial) {
-        ; // wait for serial port to connect.
-    }
+    Serial.begin(9600);    // debugging
     Serial.println("Home Automation 1.0");
     Serial.println("ECU0: Blinds");
     Serial.println("By: Lukas Foughman");
@@ -197,28 +179,38 @@ void setup() {
     Serial.println();
     Serial.println();
 
+    rfRead.enableReceive(0);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
+    
+    lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
+    lcd.home(); 
+    for(int i = 0; i< 3; i++) {    // quick 3 blinks of backlight
+        lcd.backlight();
+        delay(250);
+        lcd.noBacklight();
+        delay(250);
+    }
+    lcd.backlight();    // finish with backlight on  
     LCD("Home", " Automation 1.0", 6, 0);
-    delay(2000);
+    delay(2000);    // show startup msg on LCD for 2sec
+    lcd.clear();    // then clear it
+
     /*LCD("ECU0: Blinds");
     delay(2000);
     LCD("Written by:", " Lukas Foughman", 2, 0);
     delay(2000);*/
-    lcd.clear();
-
-    //digitalWrite(12, HIGH);
-
     //pinMode(rxPin, INPUT); // Input of 433 MHz receiver
 
-
-    for(int i = 0; i <= 3; i++) {   
+    //******** INIT IN/OUTPUTS ********
+    for(int i = 0; i <= 3; i++) {   //Initialize all relay outputs and set them to HIGH (OFF, DOWN)
         pinMode(relayPwrPin[i], OUTPUT);
         pinMode(relayDirPin[i], OUTPUT);
-        digitalWrite(relayPwrPin[i], HIGH); //set power OFF
-        digitalWrite(relayDirPin[i], HIGH); //set direction LEFT (open)
+        digitalWrite(relayPwrPin[i], HIGH);    // set power OFF
+        digitalWrite(relayDirPin[i], HIGH);    // set direction DOWN (open)
     }
     pinMode(lightLevelPin, INPUT);
-
     pinMode(tempPin, INPUT);
+    //*********************************
+
 
     //for(i = 0; i <4; i++) lastDirection[i] = EEPROMRead(i); //Read all shades last message received
 
@@ -228,23 +220,13 @@ void setup() {
 }
 
 void loop() {    
-
-
-    
-    uint16_t msg;
     //String tempString;
-    double temp;
-    int light;
-
     //vw_rx_start();
-
     //delay(100);
-
-    light = Photo(); //Check lighting in environment
-    temp = Thermister(); 
-
+    int light = Photo(); // check lighting in environment
+    double temp = Thermister(); 
     //msg = 0x9573;
-    msg = RxMsg(light); //needed!!!!!!!!!
+    uint16_t msg = RxMsg(light);    // 
     //Serial.println(msgx);  good to have
 
     //delay(100);
@@ -256,14 +238,29 @@ void loop() {
         Serial.println("Blinds::shadeTimeout.StopTimer()");
         received = shadeAll_neutral;
     }*/
-
-
-
-    Branch(msg, temp);
+    Branch(msg, temp);    //goto Branch do dissect the message and also deliver temperature data if msg = 0
 
     //Time();
 
     //Serial.println(second());
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -314,4 +311,4 @@ void loop() {
     delay(2000);
     Encrypt(msg, key);
 */    
-}
+

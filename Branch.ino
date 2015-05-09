@@ -13,13 +13,6 @@ void Branch(uint16_t msgBranch, double temp) {
     static int tempCounter = 0;
 
 
-
-
-    //byte lastDirection[4];
-
-
-    //for(i = 0; i <4; i++) lastDirection[i] = EEPROMRead(i); //Read all shades last message received
-
     if(DEBUG && LEVEL.Branch) {
         Serial.print("rxTimeout = ");
         Serial.println(rxTimeout);
@@ -74,24 +67,6 @@ void Branch(uint16_t msgBranch, double temp) {
 
             break;
         
-/*        case shade0_upHalf: 
-
-            Serial.println("shade0_upHalf");
-            LCD("Action", "Shade0 Up Half");
-            Relays(LOW, HIGH, 1500); //PWR ON, DOWN (?) 1.5 sec
-            tempVisible = false;
-
-            break;
-       
-        case shade0_downHalf: 
-
-            Serial.println("shade0_downHalf");
-            LCD("Action", "Shade0 Down Half");
-            Relays(LOW, HIGH, 1500); //PWR ON, DOWN (?) 1.5 sec
-            tempVisible = false;
-
-            break;
-*/
     //**************************** SHADE 1 ********************************
         /*case shade1_neutral:
 
@@ -122,19 +97,7 @@ void Branch(uint16_t msgBranch, double temp) {
             //tempDelay = 100;
 
             break;
-        
-/*        case shade1_upHalf: 
 
-            Serial.println("shade1_upHalf");
-
-            break;
-       
-        case shade1_downHalf: 
-
-            Serial.println("shade1_downHalf");
-
-            break;
-*/
     //**************************** SHADE 2 ********************************
         /*case shade2_neutral:
             
@@ -165,18 +128,6 @@ void Branch(uint16_t msgBranch, double temp) {
 
             break;
         
-/*        case shade2_upHalf: 
-
-            Serial.println("shade2_upHalf");
-
-            break;
-       
-        case shade2_downHalf: 
-
-            Serial.println("shade2_downHalf");
-
-            break;         
-*/
     //**************************** SHADE 3 ********************************
         /*case shade3_neutral:
 
@@ -206,19 +157,7 @@ void Branch(uint16_t msgBranch, double temp) {
             //tempDelay = 100;
 
             break;
-        
-/*        case shade3_upHalf: 
 
-            Serial.println("shade3_upHalf");
-
-            break;
-       
-        case shade3_downHalf: 
-
-            Serial.println("shade3_downHalf");
-
-            break;    
-*/
     //**************************** SHADE ALL ********************************
         case shadeAll_neutral:
 
@@ -250,18 +189,6 @@ void Branch(uint16_t msgBranch, double temp) {
 
             break;
         
-/*        case shadeAll_upHalf: 
-
-            Serial.println("shadeAll_upHalf");
-
-            break;
-       
-        case shadeAll_downHalf: 
-
-            Serial.println("shadeAll_downHalf");
-
-            break;       
-*/
     //**************************** ELSE *************************************
 
     /*    case empty:

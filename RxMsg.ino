@@ -6,11 +6,11 @@
 
     uint16_t received;
 
-    if (mySwitch.available()) {
+    if (rfRead.available()) {
         //LED(12, light); //GREEN
 
-        //int value = mySwitch.getReceivedValue();
-        received = mySwitch.getReceivedValue();
+        //int value = rfRead.getReceivedValue();
+        received = rfRead.getReceivedValue();
 
         //if (value == 0) {
         if (received == 0) {
@@ -20,17 +20,17 @@
             //timerReset = true;
             if(DEBUG && LEVEL.RxMsg) {  
               Serial.print("RxMsg::received ");
-              Serial.print( mySwitch.getReceivedValue(), HEX);
+              Serial.print( rfRead.getReceivedValue(), HEX);
               Serial.print(" / ");
-              Serial.print( mySwitch.getReceivedBitlength() );
+              Serial.print( rfRead.getReceivedBitlength() );
               Serial.print("bit ");
               Serial.print("Protocol: ");
-              Serial.println( mySwitch.getReceivedProtocol() );
+              Serial.println( rfRead.getReceivedProtocol() );
             }
-            //received = mySwitch.getReceivedValue();
+            //received = rfRead.getReceivedValue();
         }
 
-        mySwitch.resetAvailable();
+        rfRead.resetAvailable();
     }
     else {
         //rxTimeout--;

@@ -1,5 +1,7 @@
 void LCD(String topRow, String botRow, int posTop, int posBot) {
 
+	static String oldTopRow = "";
+	static String oldBotRow = "";
 
 	if(DEBUG && LEVEL.LCD) {
 		Serial.print("LCD::oldTopRow='"); 
@@ -67,10 +69,6 @@ void LCD(String topRow, String botRow, int posTop, int posBot) {
 
 	/*	oldBotRow = botRow;
 	}	*/
-
-
-
-
 
 }
 
