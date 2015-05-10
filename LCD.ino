@@ -1,7 +1,7 @@
 void LCD(String topRow, String botRow, int posTop, int posBot) {
 
-	static String oldTopRow = "";
-	static String oldBotRow = "";
+	static String oldTopRow = "";	// comparer to avoid writing same string all over again
+	static String oldBotRow = "";	// comparer to avoid writing same string all over again
 
 	if(DEBUG && LEVEL.LCD) {
 		Serial.print("LCD::oldTopRow='"); 
@@ -38,20 +38,20 @@ void LCD(String topRow, String botRow, int posTop, int posBot) {
 	/*	oldTopRow = topRow;
 	}*/
 
-	if(oldTopRow != topRow || oldBotRow != botRow) {
+	if(oldTopRow != topRow || oldBotRow != botRow) {	// if strings are new, then write them to LCD
 
-		lcd.clear();
-		lcd.setCursor(posTop, 0); //Start at character 0 on line 0
-		lcd.print(topRow);
-		lcd.setCursor(posBot, 1);
-		lcd.print(botRow);
+		lcd.clear();	// first clear LCD
+		lcd.setCursor(posTop, 0);	// start at character x on line 0
+		lcd.print(topRow);    // print top row
+		lcd.setCursor(posBot, 1);	// set cursor to correct position
+		lcd.print(botRow);    // print bot row
 
-		oldTopRow = topRow;
-		oldBotRow = botRow;
+		oldTopRow = topRow;	  // update comparer
+		oldBotRow = botRow;	  // update comparer
 
 	}	
 
-	else ;
+	else ;    // do nothing
 	
 	/*if(oldBotRow != botRow) {
 		lcd.setCursor(0, 1);

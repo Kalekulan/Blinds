@@ -1,22 +1,21 @@
  uint16_t RxMsg(int light) { 
 
-    
-    int unknown = 5;
+    int unknown = 5;    // sometimes this function returns a random number of 5. So I set this one to unknown to avoid trouble
     //uint16_t received = unknown;
-
     uint16_t received;
 
-    if (rfRead.available()) {
+    if (rfRead.available()) {   // if there's something coming from the RF receiver
         //LED(12, light); //GREEN
 
         //int value = rfRead.getReceivedValue();
-        received = rfRead.getReceivedValue();
+        received = rfRead.getReceivedValue();   // grab the value
 
         //if (value == 0) {
-        if (received == 0) {
+        if (received == 0) {    // if there's nothing in it, then it might be an unkown encoding
           Serial.print("RxMsg::Unknown encoding");
           //received = 0;
-        } else {
+        } 
+        else {
             //timerReset = true;
             if(DEBUG && LEVEL.RxMsg) {  
               Serial.print("RxMsg::received ");
@@ -30,36 +29,27 @@
             //received = rfRead.getReceivedValue();
         }
 
-        rfRead.resetAvailable();
+        rfRead.resetAvailable();    // when read is done, then reset rcswitch
     }
-    else {
+    else {    // if rcswitch wasn't available when RxMsg function was called, then...
         //rxTimeout--;
         //if(rxTimeout == 0) received = shadeAll_neutral;
         //Serial.print("RxMsg::rxTimeout=");
         //Serial.println(rxTimeout);
-
         //received = 0;
         //if(received > 0) 
-
-        if(rxTimeout <= 0) {
-
+        if(rxTimeout <= 0) {    // if the timeout for receiving equals 0, then change all all relays to OFF/DOWN
             received = shadeAll_neutral;
-            timerReset = true;
+            timerReset = true;    // reset the timer for receiving msg. see Branch function for more info
             //LED(13, light); //BLUE
         }
         else {
-            received = 0;
+            received = 0;   // received variable is set to zero to avoid garbage when calling RxMsg function if rc switch isn't available
             //LED(13, light); //BLUE
         }
     }
 
-    if(DEBUG && LEVEL.RxMsg) {
-        //Serial.print("received = ");
-        //Serial.println(received);
-    }
     return(received);
-
-
 }
 
 

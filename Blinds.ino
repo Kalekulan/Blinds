@@ -29,7 +29,8 @@ struct debugLevel {
 };
 debugLevel LEVEL;
 const boolean DEBUG = true;
-//*********************************
+//**********************************
+
 
 /*
     struct Shade {
@@ -181,6 +182,7 @@ void setup() {
 
     rfRead.enableReceive(0);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
     
+    //***** LCD START-UP SEQUENCE *****
     lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
     lcd.home(); 
     for(int i = 0; i< 3; i++) {    // quick 3 blinks of backlight
@@ -193,6 +195,7 @@ void setup() {
     LCD("Home", " Automation 1.0", 6, 0);
     delay(2000);    // show startup msg on LCD for 2sec
     lcd.clear();    // then clear it
+    //*********************************
 
     /*LCD("ECU0: Blinds");
     delay(2000);
@@ -223,10 +226,10 @@ void loop() {
     //String tempString;
     //vw_rx_start();
     //delay(100);
-    int light = Photo(); // check lighting in environment
-    double temp = Thermister(); 
+    int light = Photo();    // check lighting in environment
+    double temp = Thermister();   // get ambient temperature
     //msg = 0x9573;
-    uint16_t msg = RxMsg(light);    // 
+    uint16_t msg = RxMsg(light);    // call RxMsg to see if there's data to fetch
     //Serial.println(msgx);  good to have
 
     //delay(100);
@@ -238,7 +241,7 @@ void loop() {
         Serial.println("Blinds::shadeTimeout.StopTimer()");
         received = shadeAll_neutral;
     }*/
-    Branch(msg, temp);    //goto Branch do dissect the message and also deliver temperature data if msg = 0
+    Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data if msg = 0
 
     //Time();
 

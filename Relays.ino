@@ -1,17 +1,8 @@
 void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
 
-    static boolean relayPwrActiveState[4] = { HIGH, HIGH, HIGH, HIGH }; //OFF
-    static boolean relayDirActiveState[4] = { HIGH, HIGH, HIGH, HIGH }; //DOWN
-//	digitalWrite(RELAY1,LOW);           // Turns ON Relays 1
-//	Serial.println("StateHigh: ");
-//	Serial.println(digitalRead(RELAY1));
-//	delay(2000);                                      // Wait 2 seconds
-//	digitalWrite(RELAY1,HIGH);          // Turns Relay Off
-//	Serial.println("StateLow: ");
-//	Serial.println(digitalRead(RELAY1));
-//	delay(2000);
-
-    int all = 10;
+    static boolean relayPwrActiveState[4] = { HIGH, HIGH, HIGH, HIGH };   // on first init, set pwr relay comparer to off/HIGH
+    static boolean relayDirActiveState[4] = { HIGH, HIGH, HIGH, HIGH };   // on first init, set dir relay comparer to down/HIGH
+    int all = 10;    // a randomly chosen number when shade = ALL
 
     if(DEBUG && LEVEL.Relays) { 
         Serial.print("Relays::");
@@ -39,18 +30,15 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
         Serial.println(relayDirActiveState[shade]);
     }
 
-    
+    if(shade <= 3) {    // if shade equals 0, 1, 2, 3 then...
 
-
-    if(shade <= 3) {
-
-        if(relayPwrPin[shade] != relayPwrActiveState[shade]) {
-            digitalWrite(relayPwrPin[shade], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
-            relayPwrActiveState[shade] = relayPwrPin[shade];
+        if(relayPwrPin[shade] != relayPwrActiveState[shade]) {    // if relay isn't LOW/ON already, then change state
+            digitalWrite(relayPwrPin[shade], relayPwr);    // set power (0, LOW = ON, 1 = OFF)
+            relayPwrActiveState[shade] = relayPwrPin[shade];    // update comparer
         }
-        if(relayDirPin[shade] != relayDirActiveState[shade]) {
-            digitalWrite(relayDirPin[shade], relayDir); //Set Direction (0 = UP, 1 = DOWN) 
-            relayDirActiveState[shade] = relayDirPin[shade];
+        if(relayDirPin[shade] != relayDirActiveState[shade]) {    // if relay isn't LOW/UP already, then change state
+            digitalWrite(relayDirPin[shade], relayDir);    // set Direction (0 = UP, 1 = DOWN) 
+            relayDirActiveState[shade] = relayDirPin[shade];    // update comparer
         }
     }
     /*if(shade == 0) {
@@ -79,26 +67,26 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
         digitalWrite(relayDirPin[3], relayDir); //Set Direction (0, LOW = UP, 1 = DOWN)
     }*/
 
-    else if(shade == all) {
+    else if(shade == all) {    // if all shades, then...
 
-        for(int i = 0; i <= 3; i++) {
+        for(int i = 0; i <= 3; i++) {    // check comparer for all shades/relays
 
-            if(relayPwrPin[i] != relayPwrActiveState[i]) {
-                digitalWrite(relayPwrPin[i], relayPwr); //Set power (0, LOW = ON, 1 = OFF)
-                relayPwrActiveState[i] = relayPwrPin[i];
+            if(relayPwrPin[i] != relayPwrActiveState[i]) {    // if relay isn't LOW/ON already, then change state
+                digitalWrite(relayPwrPin[i], relayPwr);    // set power (0, LOW = ON, 1 = OFF)
+                relayPwrActiveState[i] = relayPwrPin[i];    // update comparer
             }
 
-            if(relayDirPin[i] != relayDirActiveState[i]) {
-                digitalWrite(relayDirPin[i], relayDir); //Set Direction (0, LOW = UP, 1 = DOWN)
-                relayDirActiveState[i] = relayDirPin[i];
+            if(relayDirPin[i] != relayDirActiveState[i]) {    // if relay isn't LOW/UP already, then change state
+                digitalWrite(relayDirPin[i], relayDir);    // set Direction (0, LOW = UP, 1 = DOWN)
+                relayDirActiveState[i] = relayDirPin[i];    // update comparer
             }
 
         }
     }
 
-    if(relayPwr == LOW) relaysActive = true;  //Pwr = ON, the relays are active
-    else relaysActive = false;
+    if(relayPwr == LOW) relaysActive = true;    // pwr = ON, the relays are active
+    else relaysActive = false;    // pwr relays are off
 
-    delay(time); //wait till motor is finished
+    delay(time);    // wait till motor is finished
 
 }
