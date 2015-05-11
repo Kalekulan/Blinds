@@ -3,10 +3,10 @@ void Branch(uint16_t msgBranch, double temp) {
 
     //*********** VARIABLES ***********
     // pre defined variables to make it easy to follow
-    boolean ON = LOW;   // led lit on relay board
-    boolean OFF = HIGH;
-    boolean UP = LOW;   // led lit on relay board
-    boolean DOWN = HIGH;
+    const boolean ON = LOW;   // led lit on relay board
+    const boolean OFF = HIGH;
+    const boolean UP = LOW;   // led lit on relay board
+    const boolean DOWN = HIGH;
     const int AVG = 7;    // 
     static double tempArray[AVG];    // 
     static double tempAvg;    // the final average temperature value that will be sent to LCD when called for
@@ -158,7 +158,7 @@ void Branch(uint16_t msgBranch, double temp) {
             //LCD("Action", "ShadeAll Neutral");   
             //LCD("", "");    
             Relays(10, OFF, DOWN, 0);    // PWR OFF for shade ALL, DOWN, 0 sec
-            rxTimeout = 20;
+            //rxTimeout = 20;
             //tempVisible = false;
             //tempDelay = 0;
             break;
@@ -197,9 +197,10 @@ void Branch(uint16_t msgBranch, double temp) {
 
         default:    // if the msgBranch isn't equal to any of the above states
             if(DEBUG && LEVEL.Branch) {
-                Serial.println("Branch::default");
+                Serial.print("Branch::default");
                 //Serial.print("unknown message received");
                 Serial.print("\t");
+                Serial.print("msgBranch=");
                 Serial.println(msgBranch);
                 //Serial.print("Branch::tempDelay=");
                 //Serial.println(tempDelay);

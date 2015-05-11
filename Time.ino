@@ -1,3 +1,4 @@
+/*2015-05-11 - NOT USED!
 void Time () {
 	byte timeAlive[32];
 	int i = 0;
@@ -37,3 +38,4 @@ void Time () {
 	//delay(5000);
 	
 }
+*/

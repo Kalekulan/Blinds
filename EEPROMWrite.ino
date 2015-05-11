@@ -17,6 +17,8 @@ An EEPROM write takes 3.3 ms to complete. The EEPROM memory has a specified life
 */
 
 
+/* 2015-05-11 - NOT USED!
+
 void EEPROMWrite (int adress, byte value) {
 
 	//byte value[4];
@@ -26,8 +28,10 @@ void EEPROMWrite (int adress, byte value) {
 	//byte value = (message >> 24) & 0xFF;;
 
 
-	EEPROM.write(adress, value);
 
+	EEPROM.write(adress, value);
+}
+*/
 	//for(i = 0; i < 4; i ++) {
 	/*	value[0] = (shade0 >> 24) & 0xFF;
 		value[1] = (shade1 >> 24) & 0xFF;
@@ -43,4 +47,4 @@ void EEPROMWrite (int adress, byte value) {
 	}
 	*/
 	
-}
+

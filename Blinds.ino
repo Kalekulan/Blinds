@@ -137,10 +137,9 @@ Shade shadeAll {0xAA80FC80, 0xAA80FCFF, 0xAA80FC88, 0xAA80FCF0, 0xAA80FC8F};  //
 */
 
 //*********** VARIABLES ***********
-int rxTimeout = 20;
 //uint16_t received;
-boolean timerReset = false;
-boolean relaysActive = false;
+//boolean timerReset = false;
+//boolean relaysActive = false;
 //*********************************
 
 
@@ -164,7 +163,7 @@ RCSwitch rfRead = RCSwitch();   //Initialize rfRead
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Addr, En, Rw, Rs, d4, d5, d6, d7, backlighpin, polarity
 //*********************************
 
-const int lastDay = 255;
+//const int lastDay = 255;
 
 
 
@@ -257,26 +256,25 @@ void loop() {
     //Serial.println(second());
 
 
-
-    static int light = Photo();    // run the function for the first time 
-    static double temp = Thermister();    // run the function for the first time 
+    static int rxTimeout = 0;    // rxTimeout start value is 0, set only at start of program
+    int light = Photo();    // check lighting in environment
+    double temp = Thermister();   // get ambient temperature
+    uint16_t msg = 0;
+    static uint16_t show = msg;
 
     if(rfRead.available()) {
 
-        uint16_t msg = RxMsg();
+        msg = RxMsg();    // if there's data to read, then call RxMsg()
         rxTimeout = 1;    // start the timer
-        Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data if msg = 0
+        show = msg;
+        Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
 
     }
 
     else {
-
-        int light = Photo();    // check lighting in environment
-        double temp = Thermister();   // get ambient temperature
-
         if(rxTimeout > 0 && rxTimeout < 20) {
             rxTimeout++;
-            Branch(msg, temp);
+            Branch(show, temp);
         }
         
         else if (rxTimeout >= 20) {
@@ -284,10 +282,11 @@ void loop() {
             rxTimeout = 0;    // then reset the RxMsg timer....
         }
 
-        else if(rxTimeout <= 0) Branch(0, temp);
-        
+        else if(rxTimeout <= 0) Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
 
     }
+
+    
 
 }
 
