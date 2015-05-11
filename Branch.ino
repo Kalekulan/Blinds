@@ -12,7 +12,8 @@ void Branch(uint16_t msgBranch, double temp) {
     static double tempAvg;    // the final average temperature value that will be sent to LCD when called for
     static int tempCounter = 0;    // used to 
     //*********************************
-
+  
+    /* 2015-05-11
     if(DEBUG && LEVEL.Branch) {
         Serial.print("Branch::rxTimeout = ");
         Serial.print(rxTimeout);
@@ -20,13 +21,20 @@ void Branch(uint16_t msgBranch, double temp) {
         Serial.print("Branch::timerReset = ");
         Serial.println(timerReset);
     }
-    //if(received > 0 || timerReset == true) {
+    
     if(msgBranch > 0 || timerReset == true) {   // if the message received is larger than 0 OR timerReset is true then...
         rxTimeout = 20;    // reset timer
         timerReset = false;    // reset timerReset variable
     }
-    //else if(received == 0) rxTimeout--;
     else if(msgBranch == 0) rxTimeout--;    // if nothing was received, then decrease rxTimeout
+    */
+
+
+
+
+
+    //if(received > 0 || timerReset == true) {
+    //else if(received == 0) rxTimeout--;
     /*if(msgBranch > 0) {
         shadeTimeout.StartTimer();
         //Serial.println("Branch::shadeTimeout.StartTimer()");
@@ -201,7 +209,11 @@ void Branch(uint16_t msgBranch, double temp) {
             //Relays(0, OFF, DOWN, 0); //both relays OFF, 0 sec
             //if(tempDelay <= 0 || tempVisible == false) {
             //if(tempVisible == false) {
-            if(relaysActive == false) {    // check if relays are off/inactive, if they are then do temperature check
+
+
+            //if(relaysActive == false) {    // check if relays are off/inactive, if they are then do temperature check
+
+
                 //tempString = Thermister(); 
                 //LCD("  Temperature", tempString); //if temp isn't visible, make it visible
                 tempCounter++;    // increase temp counter
@@ -223,7 +235,7 @@ void Branch(uint16_t msgBranch, double temp) {
                 //LCD("Temperature", ""+tempa, 3, 5); //if temp isn't visible, make it visible
                 //tempDelay = 100; //reset if <=0
                 //tempVisible = true; //temp is now visible
-            }
+            //}
             /*else if(tempVisible == false) { //if other message has been shown other than temp, then update the temperature
                 tempString = Thermister(); 
                 LCD("  Temperature", tempString); //if temp isn't visible, make it visible

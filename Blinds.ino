@@ -227,10 +227,18 @@ void loop() {
     //String tempString;
     //vw_rx_start();
     //delay(100);
+    //msg = 0x9573;
+    
+
+/* 2015-05-11
+
     int light = Photo();    // check lighting in environment
     double temp = Thermister();   // get ambient temperature
-    //msg = 0x9573;
     uint16_t msg = RxMsg(light);    // call RxMsg to see if there's data to fetch
+    
+*/
+
+
     //Serial.println(msgx);  good to have
 
     //delay(100);
@@ -242,11 +250,44 @@ void loop() {
         Serial.println("Blinds::shadeTimeout.StopTimer()");
         received = shadeAll_neutral;
     }*/
-    Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data if msg = 0
+    
 
     //Time();
 
     //Serial.println(second());
+
+
+
+    static int light = Photo();    // run the function for the first time 
+    static double temp = Thermister();    // run the function for the first time 
+
+    if(rfRead.available()) {
+
+        uint16_t msg = RxMsg();
+        rxTimeout = 1;    // start the timer
+        Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data if msg = 0
+
+    }
+
+    else {
+
+        int light = Photo();    // check lighting in environment
+        double temp = Thermister();   // get ambient temperature
+
+        if(rxTimeout > 0 && rxTimeout < 20) {
+            rxTimeout++;
+            Branch(msg, temp);
+        }
+        
+        else if (rxTimeout >= 20) {
+            Branch(shadeAll_neutral, temp);
+            rxTimeout = 0;    // then reset the RxMsg timer....
+        }
+
+        else if(rxTimeout <= 0) Branch(0, temp);
+        
+
+    }
 
 }
 
