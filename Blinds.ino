@@ -7,12 +7,14 @@
 #include <EEPROM.h> //Used for R/W to EEPROM
 #include <Time.h> //Used for keeping time
 #include <stdlib.h> //Standard
-#include <RCSwitch.h> //
+#include <RCSwitch.h> //For the RF protocol
 //*********************************
 
 
 //*********** DEBUGGING ***********
-struct debugLevel {
+const boolean DEBUG = true;   // main debug. Used to turn off/on all debugging.
+
+struct debugLevel {    // a struct for log level. Separated into all functions.
 
     const boolean Blinds = false;
     const boolean Branch = true;
@@ -28,7 +30,6 @@ struct debugLevel {
  
 };
 debugLevel LEVEL;
-const boolean DEBUG = true;
 //**********************************
 
 

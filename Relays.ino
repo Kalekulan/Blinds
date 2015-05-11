@@ -84,8 +84,8 @@ void Relays(int shade, boolean relayPwr, boolean relayDir, int time) {
         }
     }
 
-    if(relayPwr == LOW) relaysActive = true;    // pwr = ON, the relays are active
-    else relaysActive = false;    // pwr relays are off
+    if(relayPwr == LOW) relaysActive = true;    // pwr = ON, the relays are active. This one is used in RxMsg as a safety function
+    else relaysActive = false;    // pwr relays are off. This one is used in RxMsg as a safety function
 
     delay(time);    // wait till motor is finished
 
