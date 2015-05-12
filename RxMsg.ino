@@ -17,7 +17,7 @@
         } 
         else {
             //timerReset = true;
-            if(DEBUG && LEVEL.RxMsg) {  
+            if(DEBUG && DOMAIN.RxMsg) {  
               Serial.print("RxMsg::received ");
               Serial.print( rfRead.getReceivedValue(), HEX);
               Serial.print(" / ");

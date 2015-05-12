@@ -14,22 +14,22 @@
 //*********** DEBUGGING ***********
 const boolean DEBUG = true;   // main debug. Used to turn off/on all debugging.
 
-struct debugLevel {    // a struct for log level. Separated into all functions.
+struct debugDomain {    // a struct for log level. Separated into all functions.
 
-    const boolean Blinds = false;
+    const boolean Blinds = true;
     const boolean Branch = true;
     const boolean Decrypt = false;
     const boolean EEPROMRead = false;
     const boolean EEPROMWrite = false;
     const boolean LCD = false;
     const boolean Photo = false;
-    const boolean Relays = true;
+    const boolean Relays = false;
     const boolean RxMsg = false;
     const boolean Thermister = false;
     const boolean Time = false;
  
 };
-debugLevel LEVEL;
+debugDomain DOMAIN;
 //**********************************
 
 
@@ -267,23 +267,45 @@ void loop() {
         msg = RxMsg();    // if there's data to read, then call RxMsg()
         rxTimeout = 1;    // start the timer
         show = msg;
+        if(DEBUG && DOMAIN.Blinds) {
+            Serial.print("Loop::0::msg=");
+            Serial.println(msg);
+            Serial.print("Loop::0::rxTimeout=");
+            Serial.println(rxTimeout);
+            Serial.print("Loop::0::show=");
+            Serial.println(show);       
+        }
         Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
 
     }
 
     else {
-        if(rxTimeout > 0 && rxTimeout < 20) {
-            rxTimeout++;
-            Branch(show, temp);
+
+        if(DEBUG && DOMAIN.Blinds) {
+            Serial.print("Loop::1::rxTimeout=");
+            Serial.println(rxTimeout);
+            Serial.print("Loop::1::light=");
+            Serial.println(light);
+            Serial.print("Loop::1::temp=");
+            Serial.println(temp);
+            Serial.print("Loop::1::show=");
+            Serial.println(show);       
+            Serial.print("Loop::1::msg=");
+            Serial.println(msg);   
+        }
+
+        if(rxTimeout > 0 && rxTimeout < 12) {
+            rxTimeout++;    //if rxTimeout is running (> 0) then increase it
+            //Branch(show, temp);
         }
         
-        else if (rxTimeout >= 20) {
+        else if (rxTimeout >= 12) {    // timeout is triggered. Then turn off all relays
             Branch(shadeAll_neutral, temp);
-            rxTimeout = 0;    // then reset the RxMsg timer....
+            rxTimeout = 0;    // then reset the RxMsg timer...
         }
 
         else if(rxTimeout <= 0) Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
-
+        
     }
 
     

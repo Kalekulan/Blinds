@@ -196,10 +196,8 @@ void Branch(uint16_t msgBranch, double temp) {
     */
 
         default:    // if the msgBranch isn't equal to any of the above states
-            if(DEBUG && LEVEL.Branch) {
-                Serial.print("Branch::default");
-                //Serial.print("unknown message received");
-                Serial.print("\t");
+            if(DEBUG && DOMAIN.Branch) {
+                Serial.print("Branch::default::");
                 Serial.print("msgBranch=");
                 Serial.println(msgBranch);
                 //Serial.print("Branch::tempDelay=");
