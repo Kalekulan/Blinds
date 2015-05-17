@@ -228,7 +228,8 @@ void Branch(uint16_t msgBranch, double temp) {
                     String tempString = "";    // create tempString
                     for(int i = 0; i < sizeof(tempChar) - 1; i++) tempString+=tempChar[i];    // create the temp string. -1 to remove trash
                     tempString = tempString + "C";    // finalize temp string to be sent to LCD
-                    LCD("Temperature", tempString, 3, 5);   //if temp isn't visible, make it visible
+                    LCD("Temperature", tempString, 3, 5); 
+
                     tempCounter = 0;    // reset tempCounter
                 }
                 //LCD("Temperature", ""+tempa, 3, 5); //if temp isn't visible, make it visible

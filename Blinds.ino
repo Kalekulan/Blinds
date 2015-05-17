@@ -21,7 +21,7 @@ struct debugDomain {    // a struct for log level. Separated into all functions.
     const boolean Decrypt = false;
     const boolean EEPROMRead = false;
     const boolean EEPROMWrite = false;
-    const boolean LCD = false;
+    const boolean LCD = true;
     const boolean Photo = false;
     const boolean Relays = false;
     const boolean RxMsg = false;
@@ -140,12 +140,13 @@ Shade shadeAll {0xAA80FC80, 0xAA80FCFF, 0xAA80FC88, 0xAA80FCF0, 0xAA80FC8F};  //
 //uint16_t received;
 //boolean timerReset = false;
 //boolean relaysActive = false;
+const int TIMEOUTMAX = 8;
 //*********************************
 
 
 
 //************ PINNING ************
-//const int rxPin = 2;
+const int rxPin = 0;    // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
 const int relayPwrPin[4] = {4, 6, 8, 10};   // there's four power relays on pin #4, #6, #8, #10
 const int relayDirPin[4] = {5, 7, 9, 11};   // there's four direction relays on pin #5, #7, #9, #11
 const int lightLevelPin = 3;    // pin for the light level module
@@ -180,7 +181,7 @@ void setup() {
     Serial.println();
     Serial.println();
 
-    rfRead.enableReceive(0);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
+    rfRead.enableReceive(rxPin);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
     
     //***** LCD START-UP SEQUENCE *****
     lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
@@ -258,7 +259,9 @@ void loop() {
 
     static int rxTimeout = 0;    // rxTimeout start value is 0, set only at start of program
     int light = Photo();    // check lighting in environment
+    //int light = 1;
     double temp = Thermister();   // get ambient temperature
+    //double temp = 1.44;
     uint16_t msg = 0;
     static uint16_t show = msg;
 
@@ -276,6 +279,7 @@ void loop() {
             Serial.println(show);       
         }
         Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
+        rfRead.resetAvailable();    // when read is done, then reset rcswitch
 
     }
 
@@ -294,12 +298,12 @@ void loop() {
             Serial.println(msg);   
         }
 
-        if(rxTimeout > 0 && rxTimeout < 12) {
+        if(rxTimeout > 0 && rxTimeout < TIMEOUTMAX) {
             rxTimeout++;    //if rxTimeout is running (> 0) then increase it
             //Branch(show, temp);
         }
         
-        else if (rxTimeout >= 12) {    // timeout is triggered. Then turn off all relays
+        else if (rxTimeout >= TIMEOUTMAX) {    // timeout is triggered. Then turn off all relays
             Branch(shadeAll_neutral, temp);
             rxTimeout = 0;    // then reset the RxMsg timer...
         }

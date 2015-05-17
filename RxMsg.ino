@@ -29,7 +29,7 @@
             //received = rfRead.getReceivedValue();
         }
 
-        rfRead.resetAvailable();    // when read is done, then reset rcswitch
+        //rfRead.resetAvailable();    // when read is done, then reset rcswitch
     /* 2015-05-11
     }
 
