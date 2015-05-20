@@ -151,6 +151,7 @@ const int relayPwrPin[4] = {4, 6, 8, 10};   // there's four power relays on pin 
 const int relayDirPin[4] = {5, 7, 9, 11};   // there's four direction relays on pin #5, #7, #9, #11
 const int lightLevelPin = 3;    // pin for the light level module
 const int tempPin = A0;    // the pin for temperature sensor
+const int led = 12;    // pin for activity led
 //const int rxLED = 13;
 //*********************************
 
@@ -263,20 +264,17 @@ void loop() {
     double temp = Thermister();   // get ambient temperature
     //double temp = 1.44;
     uint16_t msg = 0;
-    static uint16_t show = msg;
 
     if(rfRead.available()) {
 
+        digitalWrite(led, HIGH);    // turn on led
         msg = RxMsg();    // if there's data to read, then call RxMsg()
         rxTimeout = 1;    // start the timer
-        show = msg;
         if(DEBUG && DOMAIN.Blinds) {
             Serial.print("Loop::0::msg=");
             Serial.println(msg);
             Serial.print("Loop::0::rxTimeout=");
-            Serial.println(rxTimeout);
-            Serial.print("Loop::0::show=");
-            Serial.println(show);       
+            Serial.println(rxTimeout);    
         }
         Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
         rfRead.resetAvailable();    // when read is done, then reset rcswitch
@@ -291,9 +289,7 @@ void loop() {
             Serial.print("Loop::1::light=");
             Serial.println(light);
             Serial.print("Loop::1::temp=");
-            Serial.println(temp);
-            Serial.print("Loop::1::show=");
-            Serial.println(show);       
+            Serial.println(temp);    
             Serial.print("Loop::1::msg=");
             Serial.println(msg);   
         }
@@ -306,6 +302,7 @@ void loop() {
         else if (rxTimeout >= TIMEOUTMAX) {    // timeout is triggered. Then turn off all relays
             Branch(shadeAll_neutral, temp);
             rxTimeout = 0;    // then reset the RxMsg timer...
+            digitalWrite(led, LOW);    // turn off led
         }
 
         else if(rxTimeout <= 0) Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
