@@ -12,6 +12,7 @@ Returns
 the value stored in that location (byte)
 */
 
+/* 2015-05-11 - NOT USED!!
 
 byte EEPROMRead(int adress) {
 
@@ -26,6 +27,8 @@ byte EEPROMRead(int adress) {
 	    Serial.print(value, HEX);
 	    Serial.println();
 	}
+
+}*/
 
 
 /*
@@ -44,8 +47,8 @@ byte EEPROMRead(int adress) {
 	    Serial.println();
 	}
 
-    delay(500);*/
+    delay(500);
 
     return(value);
+    */
 
-}

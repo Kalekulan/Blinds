@@ -2,7 +2,7 @@ int Photo() {
 
 	int lightLevel = digitalRead(lightLevelPin);	// read light level
 
-	if(DEBUG && LEVEL.Photo) {
+	if(DEBUG && DOMAIN.Photo) {
 		Serial.print("Photo::lightLevel=");
 		Serial.println(lightLevel);
 	}

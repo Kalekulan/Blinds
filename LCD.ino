@@ -3,7 +3,7 @@ void LCD(String topRow, String botRow, int posTop, int posBot) {
 	static String oldTopRow = "";	// comparer to avoid writing same string all over again
 	static String oldBotRow = "";	// comparer to avoid writing same string all over again
 
-	if(DEBUG && LEVEL.LCD) {
+	if(DEBUG && DOMAIN.LCD) {
 		Serial.print("LCD::oldTopRow='"); 
 		Serial.print(oldTopRow);
 		Serial.println("'");

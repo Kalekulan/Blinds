@@ -7,28 +7,29 @@
 #include <EEPROM.h> //Used for R/W to EEPROM
 #include <Time.h> //Used for keeping time
 #include <stdlib.h> //Standard
-#include <RCSwitch.h> //
+#include <RCSwitch.h> //For the RF protocol
 //*********************************
 
 
 //*********** DEBUGGING ***********
-struct debugLevel {
+const boolean DEBUG = true;   // main debug. Used to turn off/on all debugging.
 
-    const boolean Blinds = false;
+struct debugDomain {    // a struct for log level. Separated into all functions.
+
+    const boolean Blinds = true;
     const boolean Branch = true;
     const boolean Decrypt = false;
     const boolean EEPROMRead = false;
     const boolean EEPROMWrite = false;
-    const boolean LCD = false;
+    const boolean LCD = true;
     const boolean Photo = false;
-    const boolean Relays = true;
+    const boolean Relays = false;
     const boolean RxMsg = false;
     const boolean Thermister = false;
     const boolean Time = false;
  
 };
-debugLevel LEVEL;
-const boolean DEBUG = true;
+debugDomain DOMAIN;
 //**********************************
 
 
@@ -136,20 +137,21 @@ Shade shadeAll {0xAA80FC80, 0xAA80FCFF, 0xAA80FC88, 0xAA80FCF0, 0xAA80FC8F};  //
 */
 
 //*********** VARIABLES ***********
-int rxTimeout = 20;
 //uint16_t received;
-boolean timerReset = false;
-boolean relaysActive = false;
+//boolean timerReset = false;
+//boolean relaysActive = false;
+const int TIMEOUTMAX = 8;
 //*********************************
 
 
 
 //************ PINNING ************
-//const int rxPin = 2;
+const int rxPin = 0;    // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
 const int relayPwrPin[4] = {4, 6, 8, 10};   // there's four power relays on pin #4, #6, #8, #10
 const int relayDirPin[4] = {5, 7, 9, 11};   // there's four direction relays on pin #5, #7, #9, #11
 const int lightLevelPin = 3;    // pin for the light level module
 const int tempPin = A0;    // the pin for temperature sensor
+const int led = 12;    // pin for activity led
 //const int rxLED = 13;
 //*********************************
 
@@ -163,7 +165,7 @@ RCSwitch rfRead = RCSwitch();   //Initialize rfRead
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); // Addr, En, Rw, Rs, d4, d5, d6, d7, backlighpin, polarity
 //*********************************
 
-const int lastDay = 255;
+//const int lastDay = 255;
 
 
 
@@ -180,7 +182,7 @@ void setup() {
     Serial.println();
     Serial.println();
 
-    rfRead.enableReceive(0);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
+    rfRead.enableReceive(rxPin);  // receiver on interrupt 0 => that is pin #2 on Arduino UNO R3
     
     //***** LCD START-UP SEQUENCE *****
     lcd.begin(16,2);   // initialize the lcd for 16 chars 2 lines, turn on backlight
@@ -226,10 +228,18 @@ void loop() {
     //String tempString;
     //vw_rx_start();
     //delay(100);
+    //msg = 0x9573;
+    
+
+/* 2015-05-11
+
     int light = Photo();    // check lighting in environment
     double temp = Thermister();   // get ambient temperature
-    //msg = 0x9573;
     uint16_t msg = RxMsg(light);    // call RxMsg to see if there's data to fetch
+    
+*/
+
+
     //Serial.println(msgx);  good to have
 
     //delay(100);
@@ -241,11 +251,65 @@ void loop() {
         Serial.println("Blinds::shadeTimeout.StopTimer()");
         received = shadeAll_neutral;
     }*/
-    Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data if msg = 0
+    
 
     //Time();
 
     //Serial.println(second());
+
+
+    static int rxTimeout = 0;    // rxTimeout start value is 0, set only at start of program
+    int light = Photo();    // check lighting in environment
+    //int light = 1;
+    double temp = Thermister();   // get ambient temperature
+    //double temp = 1.44;
+    uint16_t msg = 0;
+
+    if(rfRead.available()) {
+
+        digitalWrite(led, HIGH);    // turn on led
+        msg = RxMsg();    // if there's data to read, then call RxMsg()
+        rxTimeout = 1;    // start the timer
+        if(DEBUG && DOMAIN.Blinds) {
+            Serial.print("Loop::0::msg=");
+            Serial.println(msg);
+            Serial.print("Loop::0::rxTimeout=");
+            Serial.println(rxTimeout);    
+        }
+        Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
+        rfRead.resetAvailable();    // when read is done, then reset rcswitch
+
+    }
+
+    else {
+
+        if(DEBUG && DOMAIN.Blinds) {
+            Serial.print("Loop::1::rxTimeout=");
+            Serial.println(rxTimeout);
+            Serial.print("Loop::1::light=");
+            Serial.println(light);
+            Serial.print("Loop::1::temp=");
+            Serial.println(temp);    
+            Serial.print("Loop::1::msg=");
+            Serial.println(msg);   
+        }
+
+        if(rxTimeout > 0 && rxTimeout < TIMEOUTMAX) {
+            rxTimeout++;    //if rxTimeout is running (> 0) then increase it
+            //Branch(show, temp);
+        }
+        
+        else if (rxTimeout >= TIMEOUTMAX) {    // timeout is triggered. Then turn off all relays
+            Branch(shadeAll_neutral, temp);
+            rxTimeout = 0;    // then reset the RxMsg timer...
+            digitalWrite(led, LOW);    // turn off led
+        }
+
+        else if(rxTimeout <= 0) Branch(msg, temp);    // goto Branch do dissect the message and also deliver temperature data
+        
+    }
+
+    
 
 }
 

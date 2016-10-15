@@ -15,6 +15,8 @@ double Thermister() {
     temp = temp*2;    // temp * 2
     temp = round(temp);    // round off
     temp = temp/2;    // split it by 2 to get one decimal only and wholes and halfes. E.g. 20.5, 23
+
+    if(temp < 0) temp = 0;    // safety thing to avoid trash/arduino crashing
     //static double averageTemp = temp;
     //dtostrf(temp, 2, 1, tempChar);  //3 is mininum width, 2 is precision; float value is copied onto buff
     //display character array
@@ -27,7 +29,7 @@ double Thermister() {
     //convert chararray to string
     //for(int i=0; i<sizeof(tempChar)-1; i++) tempString+=tempChar[i];  //-1 to remove trash
     //tempString = tempString + "C";    
-    if(DEBUG && LEVEL.Thermister) {
+    if(DEBUG && DOMAIN.Thermister) {
         Serial.print("Thermister::temp=");
         Serial.print(temp);
         Serial.println("C");
